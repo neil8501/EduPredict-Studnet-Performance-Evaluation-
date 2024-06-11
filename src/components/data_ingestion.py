@@ -1,11 +1,10 @@
 import sys
 import os
 
-# Add the src directory to sys.path
+# Add the project root directory to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-src_dir = os.path.join(parent_dir, 'src')
-sys.path.append(src_dir)
+project_root = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir))
+sys.path.append(project_root)
 
 # Print sys.path to confirm the path has been added
 for path in sys.path:
@@ -16,6 +15,9 @@ from src.logger import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -54,5 +56,8 @@ class DataIngestion:
             raise CustomException(e, sys) from e
         
 if __name__ == '__main__':
-    obj=DataIngestion()
-    obj.initiate_data_ingestion()
+    obj = DataIngestion()
+    train_data, test_data = obj.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+    data_transformation.initiate_data_transformation(train_data, test_data)
